@@ -57,6 +57,7 @@ function Register({ onMessage }) {
     if (!patterns.name.test(name)) return onMessage('Invalid name')
 
     // fetch CSRF token then register
+    ///this section was fixed by co poilet as it was returning from the api without the token
     const token = await API('/csrf-token')
     try {
       await API('/api/auth/register', { method: 'POST', body: JSON.stringify({ email, password, name }), headers: { 'csrf-token': token.csrfToken } })
@@ -76,7 +77,7 @@ function Register({ onMessage }) {
     </form>
   )
 }
-
+/// Login component
 function Login({ onMessage }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -104,7 +105,7 @@ function Login({ onMessage }) {
     </form>
   )
 }
-
+/// main app
 export default function App() {
   const [page, setPage] = useState('login')
   const [msg, setMsg] = useState('')
