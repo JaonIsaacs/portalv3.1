@@ -78,17 +78,21 @@ Security Implementation
 - CORS and CSRF protection
 - Rate limiting and DDoS protection
 
+
+Important note:
+
+if issues arrise please change revbiews section in dependabot.yml to matching user
  References and Resources
 
  Security Implementation
-- [OWASP Web Security Testing Guide](https://owasp.org/www-project-web-security-testing-guide/)
-- [NIST Cybersecurity Framework](https://www.nist.gov/cyberframework)
-- [Express.js Security Best Practices](https://expressjs.com/en/advanced/best-practice-security.html)
+[OWASP Web Security Testing Guide](https://owasp.org/www-project-web-security-testing-guide/)
+[NIST Cybersecurity Framework](https://www.nist.gov/cyberframework)
+[Express.js Security Best Practices](https://expressjs.com/en/advanced/best-practice-security.html)
 
  Authentication
- [JWT.io Documentation](https://jwt.io/introduction)
+[JWT.io Documentation](https://jwt.io/introduction)
  [OAuth 2.0 Specifications](https://oauth.net/2/)
- [Passport.js Documentation](http://www.passportjs.org/docs/)
+[Passport.js Documentation](http://www.passportjs.org/docs/)
 
 Frontend Framework
 [React Documentation](https://react.dev/reference/react)

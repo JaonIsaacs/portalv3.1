@@ -1,4 +1,5 @@
 version: 2
+# this section was structured with assistance via co piolt
 updates:
   - package-ecosystem: "npm"
     directory: "/backend"
@@ -11,6 +12,7 @@ updates:
       - "dependencies"
       - "backend"
     reviewers:
+    #change this if user reveres must be changed
       - "Jaw-Reload"
   - package-ecosystem: "npm"
     directory: "/frontend"
