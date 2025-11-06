@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+/// Refresh token schema
 const refreshTokenSchema = new mongoose.Schema({
   tokenId: { type: String, required: true, unique: true, index: true },
   tokenHash: { type: String, required: true },

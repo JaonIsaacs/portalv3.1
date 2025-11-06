@@ -1,23 +1,27 @@
 import React, { useState } from 'react'
 
-const API_BASE = 'http://localhost:4000';
+// Use Vite env API (import.meta.env) instead of process.env
+const API_BASE = import.meta.env.MODE === 'production' ? 'https://api.example.com' : 'http://localhost:4000';
 
 const getCsrf = async () => {
   try {
-    const t = await fetch(`${API_BASE}/csrf-token`, { credentials: 'include' });
+    const t = await fetch(`${API_BASE}/api/auth/csrf-token`, { credentials: 'include' });
     const j = await t.json();
     return j.csrfToken;
   } catch (e) {
+    console.error('CSRF token fetch failed:', e);
     return null;
   }
 }
 
 const API = async (path, opts = {}) => {
-  const defaultHeaders = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
   const doFetch = () => {
-    
-    const { headers, ...rest } = opts || {};
-    return fetch(API_BASE + path, { credentials: 'include', headers: defaultHeaders, ...rest });
+    // Split out headers so we don't accidentally overwrite the merged headers when spreading opts
+    const { headers: optHeaders = {}, ...rest } = opts || {};
+    const headers = { 'Content-Type': 'application/json', ...optHeaders };
+    // Remove any leading slashes to avoid double slashes
+    const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+    return fetch(`${API_BASE}/${cleanPath}`, { credentials: 'include', headers, ...rest });
   };
 
   let res = await doFetch();
@@ -25,7 +29,7 @@ const API = async (path, opts = {}) => {
   /// If unauthorized attempt to refresh and retry once
   if (res.status === 401) {
     const csrf = await getCsrf();
-    const refreshRes = await fetch('/api/auth/refresh', { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json', ...(csrf ? { 'csrf-token': csrf } : {}) } });
+    const refreshRes = await fetch(`${API_BASE}/api/auth/refresh`, { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json', ...(csrf ? { 'csrf-token': csrf } : {}) } });
     if (refreshRes.ok) {
       res = await doFetch();
     } else {
@@ -45,38 +49,16 @@ const patterns = {
   name: /^[A-Za-z \-']{1,100}$/
 }
 
-function Register({ onMessage }) {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [name, setName] = useState('')
-
-  const submit = async e => {
-    e.preventDefault()
-    if (!patterns.email.test(email)) return onMessage('Invalid email')
-    if (!patterns.password.test(password)) return onMessage('Invalid password')
-    if (!patterns.name.test(name)) return onMessage('Invalid name')
-
-    /// fetch CSRF token then register
-    const token = await API('/csrf-token')
-    try {
-      await API('/api/auth/register', { method: 'POST', body: JSON.stringify({ email, password, name }), headers: { 'csrf-token': token.csrfToken } })
-      onMessage('Registered')
-    } catch (err) {
-      onMessage(err.error || 'Error')
-    }
-  }
-
+function Register() {
+  // Registration disabled: show explanatory message
   return (
-    <form onSubmit={submit}>
-      <h3>Register</h3>
-      <input placeholder="Name" value={name} onChange={e => setName(e.target.value)} />
-      <input placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
-      <input placeholder="Password" type="password" value={password} onChange={e => setPassword(e.target.value)} />
-      <button type="submit">Register</button>
-    </form>
+    <div>
+      <h3>Registration Disabled</h3>
+      <p>New user registration is disabled. Contact an administrator to create an account.</p>
+    </div>
   )
 }
-
+/// Login component
 function Login({ onMessage }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -86,11 +68,21 @@ function Login({ onMessage }) {
     if (!patterns.email.test(email)) return onMessage('Invalid email')
     if (!patterns.password.test(password)) return onMessage('Invalid password')
 
-    const token = await API('/csrf-token')
     try {
-      await API('/api/auth/login', { method: 'POST', body: JSON.stringify({ email, password }), headers: { 'csrf-token': token.csrfToken } })
+      console.log('Fetching CSRF token...');
+      const token = await API('/api/auth/csrf-token')
+      console.log('Got CSRF token:', token);
+      
+      console.log('Attempting login...');
+      await API('/api/auth/login', { 
+        method: 'POST', 
+        body: JSON.stringify({ email, password }), 
+        headers: { 'csrf-token': token.csrfToken } 
+      })
+      console.log('Login successful');
       onMessage('Logged in')
     } catch (err) {
+      console.error('Login error:', err);
       onMessage(err.error || 'Error')
     }
   }
@@ -104,7 +96,7 @@ function Login({ onMessage }) {
     </form>
   )
 }
-
+/// main app
 export default function App() {
   const [page, setPage] = useState('login')
   const [msg, setMsg] = useState('')

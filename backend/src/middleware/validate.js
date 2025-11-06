@@ -30,8 +30,9 @@ function validateRegistration(req, res, next) {
 
   next();
 }
-
+/// Login validation
 function validateLogin(req, res, next) {
+  console.log('validateLogin body:', req.body);
   const { email, password } = req.body;
   if (!email || !password) return res.status(400).json({ error: 'Missing fields' });
   if (!patterns.email.test(email)) return res.status(400).json({ error: 'Invalid email' });
