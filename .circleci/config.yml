@@ -1,0 +1,62 @@
+version: 2.1
+orbs:
+  node: circleci/node@5.0.0
+
+jobs:
+  backend:
+    docker:
+      - image: cimg/node:20.8
+    steps:
+      - checkout
+      - node/with-cache:
+          steps:
+            - run: cd backend && npm ci
+            - run: cd backend && npm run lint
+            - run: cd backend && npm run audit
+            - run: cd backend && npm test
+            - run:
+                name: Run Snyk scan (if token available)
+                command: |
+                  cd backend
+                  if [ -z "$SNYK_TOKEN" ]; then
+                    echo "SNYK_TOKEN not set - skipping Snyk scan"
+                  else
+                    npm i -g snyk
+                    snyk auth $SNYK_TOKEN
+                    snyk test || true
+                  fi
+            - run:
+                name: Run SonarQube scan
+                command: |
+                  cd backend
+                  if [ -z "$SONAR_HOST_URL" ] || [ -z "$SONAR_TOKEN" ]; then
+                    echo "SONAR_HOST_URL or SONAR_TOKEN not set - skipping SonarQube scan"
+                  else
+                    npx sonarscanner -Dsonar.projectKey=portal-backend -Dsonar.sources=src -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
+                  fi
+
+  frontend:
+    docker:
+      - image: cimg/node:20.8
+    steps:
+      - checkout
+      - node/with-cache:
+          steps:
+            - run: cd frontend && npm ci
+            - run: cd frontend && npm run lint
+            - run: cd frontend && npm test
+            - run:
+                name: Run SonarQube scan
+                command: |
+                  cd frontend
+                  if [ -z "$SONAR_HOST_URL" ] || [ -z "$SONAR_TOKEN" ]; then
+                    echo "SONAR_HOST_URL or SONAR_TOKEN not set - skipping SonarQube scan"
+                  else
+                    npx sonarscanner -Dsonar.projectKey=portal-frontend -Dsonar.sources=src -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
+                  fi
+
+workflows:
+  build_and_scan:
+    jobs:
+      - backend
+      - frontend

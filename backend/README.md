@@ -30,3 +30,16 @@ Notes and production tips:
 - Use a strong JWT secret and rotate keys. Consider using short-lived access tokens and refresh tokens.
 - Harden CORS origin to your frontend domain in production.
 - Use a secure session store if you need server-side sessions.
+ - Use a secure session store if you need server-side sessions.
+
+Admin provisioning
+------------------
+
+To create users (self-registration is disabled), use the provided provisioning script:
+
+```powershell
+cd backend
+node scripts/create_user.js --email "alice@example.com" --name "Alice" --password "StrongPass123!"
+```
+
+The script reads `MONGO_URI` from the environment or defaults to a local MongoDB instance.

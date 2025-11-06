@@ -1,0 +1,26 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+    allow:
+      - dependency-type: "production"
+    versioning-strategy: "auto"
+    labels:
+      - "dependencies"
+      - "backend"
+    reviewers:
+      - "Jaw-Reload"
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+    allow:
+      - dependency-type: "production"
+    versioning-strategy: "auto"
+    labels:
+      - "dependencies"
+      - "frontend"
+    reviewers:
+      - "Jaw-Reload"

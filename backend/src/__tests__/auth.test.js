@@ -26,13 +26,8 @@ afterEach(async () => {
 });
 
 test('register -> login -> access protected route', async () => {
-  /// register
-  const reg = await request(app)
-    .post('/api/auth/register')
-    .send({ email: 'test@example.com', password: 'Password123!', name: "Tester" })
-    .expect(201)
-
-  expect(reg.body.email).toBe('test@example.com');
+  /// create user directly (registration is disabled in production)
+  await User.create({ email: 'test@example.com', passwordHash: await User.hashPassword('Password123!'), name: 'Tester' });
 
   /// login
   const login = await request(app)
@@ -55,8 +50,8 @@ test('register -> login -> access protected route', async () => {
 });
 
 test('refresh token rotation and protected access', async () => {
-  /// register
-  await request(app).post('/api/auth/register').send({ email: 'rtest@example.com', password: 'Password123!', name: "RTester" }).expect(201)
+  /// create user directly (registration disabled)
+  await User.create({ email: 'rtest@example.com', passwordHash: await User.hashPassword('Password123!'), name: 'RTester' });
 
   /// login
   const login = await request(app).post('/api/auth/login').send({ email: 'rtest@example.com', password: 'Password123!' }).expect(200)

@@ -1,5 +1,5 @@
 const http = require('http');
-
+//use this script to manually test the registration endpoint
 function getCsrf() {
   return new Promise((resolve, reject) => {
     const opts = { hostname: 'localhost', port: 4000, path: '/csrf-token', method: 'GET' };
@@ -19,7 +19,7 @@ function getCsrf() {
     req.end();
   });
 }
-
+// use the csrf token and cookies to register
 function postRegister(csrf, cookies) {
   return new Promise((resolve, reject) => {
     const data = JSON.stringify({ email: 'user@example.com', password: 'Password123!', name: 'Tester' });
@@ -44,7 +44,7 @@ function postRegister(csrf, cookies) {
     req.end();
   });
 }
-
+// run the test
 (async () => {
   try {
     const { csrf, cookies } = await getCsrf();
