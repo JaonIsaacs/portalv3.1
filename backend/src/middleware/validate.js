@@ -1,11 +1,12 @@
 const validator = require('validator');
 
-// Whitelist regex patterns
+/// Whitelist regex patterns
 const patterns = {
-  email: /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/, // basic email
-  // Password: 8-128 chars, letters, numbers and allowed symbols
+
+  email: /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/, /// basic email
+  
   password: /^[A-Za-z0-9!@#$%^&*()_+=[\]{}|;:'",.<>/?`~\\-]{8,128}$/, 
-  // Name: letters, spaces, hyphens, apostrophes
+  /// Name: letters, spaces, hyphens, apostrophes
   name: /^[A-Za-z \-']{1,100}$/,
 };
 
@@ -23,7 +24,7 @@ function validateRegistration(req, res, next) {
     return res.status(400).json({ error: 'Invalid name' });
   }
 
-  // Normalize
+  
   req.body.email = validator.normalizeEmail(email);
   req.body.name = validator.escape(name);
 

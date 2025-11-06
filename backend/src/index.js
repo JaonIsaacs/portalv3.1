@@ -25,7 +25,7 @@ async function start() {
 
     const app = createApp();
 
-    // Try to load certs for HTTPS development server
+    
     const keyPath = process.env.SSL_KEY || path.join(__dirname, '..', 'cert', 'key.pem');
     const certPath = process.env.SSL_CERT || path.join(__dirname, '..', 'cert', 'cert.pem');
 

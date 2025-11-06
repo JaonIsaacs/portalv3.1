@@ -48,18 +48,18 @@ router.post('/login', validateLogin, async (req, res) => {
     const ok = await user.verifyPassword(password);
     if (!ok) return res.status(401).json({ error: 'Invalid credentials' });
 
-    // Create JWT (in production use stronger keys and rotation)
+    // Create JWT 
     const accessToken = generateAccessToken(user);
 
   // create refresh token as tokenId.secret and store only hash of secret
   const tokenId = require('crypto').randomBytes(TOKEN_ID_BYTES).toString('hex');
   const secret = require('crypto').randomBytes(REFRESH_TOKEN_SECRET_BYTES).toString('hex');
   const refreshToken = `${tokenId}.${secret}`;
-  const expires = new Date(Date.now() + (parseInt(process.env.REFRESH_TOKEN_EXPIRES_SECONDS || '604800') * 1000)); // default 7 days
+  const expires = new Date(Date.now() + (parseInt(process.env.REFRESH_TOKEN_EXPIRES_SECONDS || '604800') * 1000)); /// default 7 days
   const hash = await bcrypt.hash(secret, SALT_ROUNDS);
   await RefreshToken.create({ tokenId, tokenHash: hash, user: user._id, expiresAt: expires });
 
-  // Set cookies: access token and refresh token (HttpOnly)
+  /// Set cookies: access token and refresh token (HttpOnly)
   res.cookie('session', accessToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax' });
   res.cookie('refresh', refreshToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax' });
     res.json({ message: 'Logged in' });
@@ -69,7 +69,7 @@ router.post('/login', validateLogin, async (req, res) => {
   }
 });
 
-// Logout - clear cookie
+/// Logout - clear cookie
 router.post('/logout', async (req, res) => {
   try {
     const r = req.cookies && req.cookies.refresh;
@@ -82,7 +82,7 @@ router.post('/logout', async (req, res) => {
   res.json({ message: 'Logged out' });
 });
 
-// Refresh token endpoint - rotate refresh tokens
+/// Token refresh - rotate refresh tokens
 router.post('/refresh', async (req, res) => {
   try {
   const token = req.cookies && req.cookies.refresh;
@@ -101,7 +101,7 @@ router.post('/refresh', async (req, res) => {
   const user = await User.findById(stored.user);
   if (!user) return res.status(401).json({ error: 'Invalid refresh token' });
 
-  // rotate: create new tokenId.secret and revoke old
+  // rotate refresh token: create new tokenId.secret and revoke old
   const newTokenId = require('crypto').randomBytes(TOKEN_ID_BYTES).toString('hex');
   const newSecret = require('crypto').randomBytes(REFRESH_TOKEN_SECRET_BYTES).toString('hex');
   const newRefreshToken = `${newTokenId}.${newSecret}`;

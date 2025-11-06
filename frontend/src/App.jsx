@@ -15,14 +15,14 @@ const getCsrf = async () => {
 const API = async (path, opts = {}) => {
   const defaultHeaders = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
   const doFetch = () => {
-    // avoid letting opts override headers set above
+    
     const { headers, ...rest } = opts || {};
     return fetch(API_BASE + path, { credentials: 'include', headers: defaultHeaders, ...rest });
   };
 
   let res = await doFetch();
 
-  // If unauthorized, attempt to refresh and retry once
+  /// If unauthorized attempt to refresh and retry once
   if (res.status === 401) {
     const csrf = await getCsrf();
     const refreshRes = await fetch('/api/auth/refresh', { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json', ...(csrf ? { 'csrf-token': csrf } : {}) } });
@@ -56,7 +56,7 @@ function Register({ onMessage }) {
     if (!patterns.password.test(password)) return onMessage('Invalid password')
     if (!patterns.name.test(name)) return onMessage('Invalid name')
 
-    // fetch CSRF token then register
+    /// fetch CSRF token then register
     const token = await API('/csrf-token')
     try {
       await API('/api/auth/register', { method: 'POST', body: JSON.stringify({ email, password, name }), headers: { 'csrf-token': token.csrfToken } })

@@ -14,7 +14,7 @@ const protectedRoutes = require('./routes/protected');
 function createApp() {
   const app = express();
 
-  // Basic security middleware
+  /// Basic security middleware
   app.use(helmet());
   app.use(express.json({ limit: '10kb' }));
   app.use(express.urlencoded({ extended: false }));
@@ -26,7 +26,6 @@ function createApp() {
   const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100, standardHeaders: true, legacyHeaders: false });
   app.use(limiter);
 
-  // Allow frontend dev origin by default (http) and also permit override via CORS_ORIGIN
   const defaultOrigin = process.env.CORS_ORIGIN || 'http://localhost:5173';
   app.use(cors({ origin: defaultOrigin, credentials: true }));
 

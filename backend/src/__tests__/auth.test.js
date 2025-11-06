@@ -26,7 +26,7 @@ afterEach(async () => {
 });
 
 test('register -> login -> access protected route', async () => {
-  // register
+  /// register
   const reg = await request(app)
     .post('/api/auth/register')
     .send({ email: 'test@example.com', password: 'Password123!', name: "Tester" })
@@ -34,17 +34,17 @@ test('register -> login -> access protected route', async () => {
 
   expect(reg.body.email).toBe('test@example.com');
 
-  // login
+  /// login
   const login = await request(app)
     .post('/api/auth/login')
     .send({ email: 'test@example.com', password: 'Password123!' })
     .expect(200)
 
-  // extract cookie
+  /// extract cookie
   const cookies = login.headers['set-cookie'];
   expect(cookies).toBeDefined();
 
-  // access protected
+  /// access protected
   const p = await request(app)
     .get('/api/protected')
     .set('Cookie', cookies)
@@ -55,20 +55,20 @@ test('register -> login -> access protected route', async () => {
 });
 
 test('refresh token rotation and protected access', async () => {
-  // register
+  /// register
   await request(app).post('/api/auth/register').send({ email: 'rtest@example.com', password: 'Password123!', name: "RTester" }).expect(201)
 
-  // login
+  /// login
   const login = await request(app).post('/api/auth/login').send({ email: 'rtest@example.com', password: 'Password123!' }).expect(200)
   const cookies = login.headers['set-cookie'];
   expect(cookies).toBeDefined();
 
-  // simulate loss of access token by removing session cookie
+  /// simulate loss of access token by removing session cookie
   const refreshCookie = cookies.find(c => c.startsWith('refresh='));
   expect(refreshCookie).toBeDefined();
   const refreshVal = refreshCookie.split(';')[0].split('=')[1];
 
-  // call refresh endpoint with refresh cookie
+  /// call refresh endpoint with refresh cookie
   const refreshResp = await request(app).post('/api/auth/refresh').set('Cookie', [`refresh=${refreshVal}`]).expect(200)
 
   const newCookies = refreshResp.headers['set-cookie'];
@@ -77,10 +77,10 @@ test('refresh token rotation and protected access', async () => {
   const newSession = newCookies.find(c => c.startsWith('session='));
   expect(newSession).toBeDefined();
 
-  // use new session to access protected
+  /// use new session to access protected
   const p = await request(app).get('/api/protected').set('Cookie', [newSession]).expect(200)
   expect(p.body.message).toBe('Protected data');
 
-  // old refresh should be revoked: attempt to use old refresh value
+  /// old refresh should be revoked: attempt to use old refresh value
   await request(app).post('/api/auth/refresh').set('Cookie', [`refresh=${refreshVal}`]).expect(401)
 });

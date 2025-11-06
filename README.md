@@ -1,6 +1,6 @@
 # Customer Portal (React + Express + MongoDB)
 
-This project is a minimal, secure customer portal example using React (Vite) for the frontend and Express + MongoDB for the backend. It demonstrates:
+This project is a secure customer portal example using React (Vite) for the frontend and Express + MongoDB for the backend. It demonstrates:
 
 - Password hashing and salting with bcrypt
 - Input whitelisting with regex (server and client)
