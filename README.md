@@ -10,9 +10,5 @@ This project is a secure customer portal example using React (Vite) for the fron
 
 This repository is a starter template. Follow the backend and frontend READMEs for setup and running.
 
-
-This project was made with light assistence of co poilet in relation to the api in the backend issues packages and fixing issues with uploading to githubs repository along side autocompleting comments
-
-
-react frame work guide used :
+React framework docs referenced:
 https://react.dev/reference/react

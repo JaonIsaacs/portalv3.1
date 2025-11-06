@@ -48,9 +48,9 @@ const patterns = {
   password: /^[A-Za-z0-9!@#$%^&*()_+=[\]{}|;:'",.<>/?`~\\-]{8,128}$/,
   name: /^[A-Za-z \-']{1,100}$/
 }
-
-function Register() {
-  // Registration disabled: show explanatory message
+function Register({ onMessage }) {
+  // Registration is disabled in this app. The component accepts `onMessage` so the parent
+  // can show messages if needed, but we do not render a registration form.
   return (
     <div>
       <h3>Registration Disabled</h3>
