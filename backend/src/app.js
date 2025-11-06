@@ -1,3 +1,15 @@
+/**
+ * Main application setup file
+ * 
+ * Security Implementation References:
+ * - Express.js Security Best Practices: https://expressjs.com/en/advanced/best-practice-security.html
+ * - Helmet.js Documentation: https://helmetjs.github.io/
+ * - OWASP Security Headers: https://owasp.org/www-project-secure-headers/
+ * - CORS in Express: https://expressjs.com/en/resources/middleware/cors.html
+ * - Rate Limiting: https://github.com/nfriedly/express-rate-limit
+ * 
+ */
+
 const express = require('express');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');

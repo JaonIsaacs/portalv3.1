@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// Simple provisioning script to create a user from the command line.
-// Usage: node scripts/create_user.js --email user@example.com --name "User" --password Secret123!
+/// Simple provisioning script to create a user from the command line.
+/// Usage: node scripts/create_user.js has been changed fortest purpes (see readme)
 
 const https = require('https');
 const crypto = require('crypto');

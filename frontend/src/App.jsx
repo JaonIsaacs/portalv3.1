@@ -1,3 +1,13 @@
+/**
+ * Main React Application Component
+ * 
+ * Frontend Framework References:
+ * - React Documentation: https://react.dev/reference/react
+ * - React Hooks Guide: https://react.dev/reference/react/hooks
+ * - Vite Environment Variables: https://vitejs.dev/guide/env-and-mode.html
+ * 
+ */
+
 import React, { useState } from 'react'
 
 // Use Vite env API (import.meta.env) instead of process.env
@@ -16,17 +26,17 @@ const getCsrf = async () => {
 
 const API = async (path, opts = {}) => {
   const doFetch = () => {
-    // Split out headers so we don't accidentally overwrite the merged headers when spreading opts
+    /// Split out headers so it doesn accidentally overwrite the merged headers when spreading opts
     const { headers: optHeaders = {}, ...rest } = opts || {};
     const headers = { 'Content-Type': 'application/json', ...optHeaders };
-    // Remove any leading slashes to avoid double slashes
+    /// Remove any leading slashes to avoid double slashes
     const cleanPath = path.startsWith('/') ? path.slice(1) : path;
     return fetch(`${API_BASE}/${cleanPath}`, { credentials: 'include', headers, ...rest });
   };
 
   let res = await doFetch();
 
-  /// If unauthorized attempt to refresh and retry once
+  /// If unauthorized attempt to refresh and retry once after attempt
   if (res.status === 401) {
     const csrf = await getCsrf();
     const refreshRes = await fetch(`${API_BASE}/api/auth/refresh`, { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json', ...(csrf ? { 'csrf-token': csrf } : {}) } });
@@ -49,8 +59,8 @@ const patterns = {
   name: /^[A-Za-z \-']{1,100}$/
 }
 function Register({ onMessage }) {
-  // Registration is disabled in this app. The component accepts `onMessage` so the parent
-  // can show messages if needed, but we do not render a registration form.
+  /// Registration is disabled in this app vertion to requirments. The component accepts `onMessage` so the parent
+  /// can show messages if needed, but we do not render a registration form.
   return (
     <div>
       <h3>Registration Disabled</h3>

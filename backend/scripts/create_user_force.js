@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Create a user without HaveIBeenPwned check (for local dev/testing only)
+// Create a user without HaveIBeenPwned check (personal and genreal practice)
 const mongoose = require('mongoose');
 const User = require('../src/models/User');
 const argv = require('yargs/yargs')(process.argv.slice(2)).options({
