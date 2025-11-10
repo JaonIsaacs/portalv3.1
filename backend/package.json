@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "yargs": "^17.7.2",
-    "bcrypt": "^5.1.0",
+    "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "csurf": "^1.11.0",
